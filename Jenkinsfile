@@ -4,8 +4,8 @@ pipeline {
         branchName = sh(
             script: "echo ${env.GIT_BRANCH} | sed -e 's|/|-|g'",
             returnStdout: true
-        )
-        dockerTag="${env.branchName}"
+        ).trim()
+        dockerTag="${env.branchName}-${env.BUILD_NUMBER}"
         dockerImage="${env.CONTAINER_IMAGE}:${env.dockerTag}"
         appName="warp-api-proxy"
 
@@ -26,7 +26,7 @@ pipeline {
                     sh '''
                         echo "Build Image"
                         docker login -u ${gitlabUsername} -p ${gitlabPassword} registry.gitlab.com
-                        docker build --pull -t ${CONTAINER_IMAGE}:${dockerTag} -f docker/Dockerfile .
+                        docker build --pull -t ${dockerImage} -f docker/Dockerfile .
                     '''
                 }
             }
@@ -35,7 +35,7 @@ pipeline {
         stage('Unit Test') {
             steps {
                 sh '''
-                    echo "Run unit test -> ${CONTAINER_IMAGE}:${dockerTag}"
+                    echo "Run unit test -> ${dockerImage}"
                 '''
             }
         }
@@ -71,8 +71,8 @@ pipeline {
                     sh '''
                         echo "Push to Registry"
                         docker login -u ${gitlabUsername} -p ${gitlabPassword} registry.gitlab.com
-                        docker push ${CONTAINER_IMAGE}:${dockerTag}
-                        docker tag ${CONTAINER_IMAGE}:${dockerTag} ${CONTAINER_IMAGE}:${branchName}
+                        docker push ${dockerImage}
+                        docker tag ${dockerImage} ${CONTAINER_IMAGE}:${branchName}
                         docker push ${CONTAINER_IMAGE}:${branchName}
                     '''
                 }
@@ -81,6 +81,10 @@ pipeline {
     }
     post {
             always {
+            sh '''
+               docker image rm -f ${CONTAINER_IMAGE}:${branchName}
+               docker image rm -f ${dockerImage}
+            '''
                 deleteDir()
             }
     }
