@@ -18,7 +18,7 @@ This is the gRPC-web proxy utility.
 
 function runDependsOnOS() {
   case "$OSTYPE" in
-      "darwin"*)
+      "linux")
         eval $1
         ;;
       *)
@@ -34,14 +34,17 @@ fi
 
 case "$1" in
   build) 
-    runDependsOnOS \
-        "docker build --build-arg backend_addr=host.docker.internal:8080 -t grpc-web-proxy -f proxy.Dockerfile ." \
-        "docker build --build-arg backend_addr=localhost:8080 -t grpc-web-proxy -f proxy.Dockerfile ." 
+    if [ "$OSTYPE" == "linux-gnu" ]; then
+      sed 's/HOST_ADDRESS/localhost/g' config.yaml > envoy.yaml
+    else
+      sed 's/HOST_ADDRESS/host.docker.internal/g' config.yaml > envoy.yaml
+    fi
+    eval "docker build -t grpc-web-proxy -f Dockerfile ." 
     ;;
   start | run)
     runDependsOnOS \
-        "docker run -it --rm --name grpcwebproxy -p 9090:9090 grpc-web-proxy" \
-        "docker run -it --rm --name grpcwebproxy --net=host -p 9090:9090 grpc-web-proxy"
+        "docker run -it --rm --name grpcwebproxy --net=host -p 9090:9090 grpc-web-proxy" \
+        "docker run -it --rm --name grpcwebproxy -p 9090:9090 grpc-web-proxy"
     ;;
     
   stop)
@@ -54,4 +57,3 @@ case "$1" in
     usage
     ;;
 esac
-
