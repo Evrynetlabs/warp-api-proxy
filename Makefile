@@ -3,7 +3,7 @@ all: build run
 
 .PHONY: build
 build: 
-	./scripts/grpcwebproxy.sh build
+	./scripts/grpcwebproxy.sh build $(name)
 
 .PHONY: run
 run:

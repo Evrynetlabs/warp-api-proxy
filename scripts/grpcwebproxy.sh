@@ -1,6 +1,10 @@
 #!/bin/bash
 
 COMMAND=$1
+IMAGE_NAME="warp/grpcwebproxy"
+if [[ ! "$2" == "" ]]; then
+  IMAGE_NAME="$2"
+fi
 
 function usage() {
   echo -n "
@@ -32,19 +36,20 @@ if [[ -z "$COMMAND" ]]; then
   exit
 fi
 
-case "$1" in
+case "$COMMAND" in
   build) 
     if [ "$OSTYPE" == "linux-gnu" ]; then
       sed 's/HOST_ADDRESS/localhost/g' config.yaml > envoy.yaml
     else
       sed 's/HOST_ADDRESS/host.docker.internal/g' config.yaml > envoy.yaml
     fi
-    eval "docker build -t grpc-web-proxy -f Dockerfile ." 
+    
+    eval "docker build -t $IMAGE_NAME -f Dockerfile ." 
     ;;
   start | run)
     runDependsOnOS \
-        "docker run -it --rm --name grpcwebproxy --net=host -p 9090:9090 grpc-web-proxy" \
-        "docker run -it --rm --name grpcwebproxy -p 9090:9090 grpc-web-proxy"
+        "docker run -it --rm --name $IMAGE_NAME --net=host -p 9090:9090 grpc-web-proxy" \
+        "docker run -it --rm --name $IMAGE_NAME -p 9090:9090 grpc-web-proxy"
     ;;
     
   stop)
