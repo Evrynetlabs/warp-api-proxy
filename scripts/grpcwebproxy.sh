@@ -5,6 +5,7 @@ IMAGE_NAME="warp/grpcwebproxy"
 if [[ ! "$2" == "" ]]; then
   IMAGE_NAME="$2"
 fi
+CONTAINER_NAME="grpcwebproxy"
 
 function usage() {
   echo -n "
@@ -48,15 +49,15 @@ case "$COMMAND" in
     ;;
   start | run)
     runDependsOnOS \
-        "docker run -it --rm --name $IMAGE_NAME --net=host -p 9090:9090 grpc-web-proxy" \
-        "docker run -it --rm --name $IMAGE_NAME -p 9090:9090 grpc-web-proxy"
+        "docker run -it --rm --name $CONTAINER_NAME --net=host -p 9090:9090 $IMAGE_NAME" \
+        "docker run -it --rm --name $CONTAINER_NAME -p 9090:9090 $IMAGE_NAME"
     ;;
     
   stop)
-      docker stop grpcwebproxy
+      docker stop $CONTAINER_NAME
     ;;
   remove)
-      docker rmi grpc-web-proxy
+      docker rmi $IMAGE_NAME
     ;;
   *)
     usage
