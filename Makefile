@@ -7,8 +7,8 @@ build:
 
 .PHONY: run
 run:
-	./scripts/grpcwebproxy.sh run
+	./scripts/grpcwebproxy.sh run $(name)
 
 .PHONY: clean
 clean:
-	./scripts/grpcwebproxy.sh remove
+	./scripts/grpcwebproxy.sh remove $(name)
