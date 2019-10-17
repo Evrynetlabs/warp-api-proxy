@@ -26,7 +26,7 @@ pipeline {
                     sh '''
                         echo "Build Image"
                         docker login -u ${gitlabUsername} -p ${gitlabPassword} registry.gitlab.com
-                        make build name=${dockerImage}
+                        docker build --pull -t ${dockerImage} -f docker/Dockerfile .
                     '''
                 }
             }

@@ -1,14 +1,11 @@
-.PHONY: all
-all: build run
-
-.PHONY: build
-build: 
-	./scripts/grpcwebproxy.sh build $(name)
+OS_NAME := $(shell uname -s | tr A-Z a-z)
 
 .PHONY: run
-run:
-	./scripts/grpcwebproxy.sh run $(name)
 
-.PHONY: clean
-clean:
-	./scripts/grpcwebproxy.sh remove $(name)
+run:
+ifeq ($(OS_NAME), linux-gnu)
+	HOST=localhost docker-compose up --build
+else
+	HOST=host.docker.internal docker-compose up --build
+endif
+

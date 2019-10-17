@@ -43,4 +43,4 @@ static_resources:
     lb_policy: round_robin
     # linux hosts: Use address: localhost 
     # mac/win host: Use address: host.docker.internal 
-    hosts: [{ socket_address: { address: HOST_ADDRESS, port_value: 8080 }}]
+    hosts: [{ socket_address: { address: %HOST_ADDRESS%, port_value: 8080 }}]
