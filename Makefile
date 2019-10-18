@@ -1,10 +1,21 @@
+OS_NAME := $(shell uname -s | tr A-Z a-z)
+
 .PHONY: all
+.PHONY: build
+.PHONY: run
+.PHONY: stop
+
 all: build run
 
-.PHONY: build
-build: 
-	./scripts/grpcwebproxy.sh build
+build:
+	docker-compose build
 
-.PHONY: run
 run:
-	./scripts/grpcwebproxy.sh run
+ifeq ($(OS_NAME), linux-gnu)
+	HOST=localhost docker-compose up -d
+else
+	HOST=host.docker.internal docker-compose up -d
+endif
+
+stop:
+	docker-compose down
