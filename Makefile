@@ -11,7 +11,7 @@ build:
 	docker-compose build
 
 run:
-ifeq ($(OS_NAME), linux-gnu)
+ifeq ($(OS_NAME), linux)
 	HOST=localhost docker-compose up -d
 else
 	HOST=host.docker.internal docker-compose up -d
