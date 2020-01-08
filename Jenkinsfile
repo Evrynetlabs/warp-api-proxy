@@ -85,7 +85,7 @@ pipeline {
             parallel {
                 stage ('Deploy to Develop Environment') {
                     when {
-                        branch 'feat/trigger-cd'
+                        branch 'develop'
                     }
                     steps {
                         build job: 'warp-proxy-deploy', parameters: [string(name: 'dockerVersion', value: env.dockerTag),string(name: 'environment', value: 'develop')]
