@@ -81,6 +81,34 @@ pipeline {
                 }
             }
         }
+        stage('Trigger to Deployment job') {
+            parallel {
+                stage ('Deploy to Develop Environment') {
+                    when {
+                        branch 'develop'
+                    }
+                    steps {
+                        build job: 'warp-proxy-deploy', parameters: [string(name: 'dockerVersion', value: env.dockerTag),string(name: 'environment', value: 'develop')]
+                    }
+                }
+                stage ('Deploy to Test Environment') {
+                    when {
+                        branch 'release/*'
+                    }
+                    steps {
+                        build job: 'warp-proxy-deploy', parameters: [string(name: 'dockerVersion', value: env.dockerTag),string(name: 'environment', value: 'test')]
+                    }
+                }
+                stage ('Deploy to Staging Environment') {
+                    when {
+                        branch 'master'
+                    }
+                    steps {
+                        build job: 'warp-proxy-deploy', parameters: [string(name: 'dockerVersion', value: env.dockerTag),string(name: 'environment', value: 'staging')]
+                    }
+                }
+            }
+        }
     }
     post {
         failure {
