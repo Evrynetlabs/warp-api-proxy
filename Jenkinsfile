@@ -8,7 +8,7 @@ pipeline {
         dockerTag="${env.branchName}-${env.BUILD_NUMBER}"
         dockerImage="${env.CONTAINER_IMAGE}:${env.dockerTag}"
         appName="warp-api-proxy"
-        githubUsername="evrynet-official"
+        githubUsername="Evrynetlabs"
 
         CONTAINER_IMAGE="registry.gitlab.com/evry/${appName}"
         status_failure="{\"state\": \"failure\",\"context\": \"continuous-integration/jenkins\", \"description\": \"Jenkins\", \"target_url\": \"${BUILD_URL}\"}"
