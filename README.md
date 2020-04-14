@@ -3,8 +3,9 @@
 grpc-web protocol proxy for warp js sdk and warp api server  
 
 ## Getting started
-
-> This repository already provided you easy steps for starting the project. You can start the project through  `make`  commands
+```
+$ make all
+```
 
 ## Developing
 ### Build With
